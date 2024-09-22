@@ -9,6 +9,7 @@ import (
 	cpuUsage "github.com/sakul987/gObserver/modules/cpu-usage"
 	"github.com/sakul987/gObserver/modules/df"
 	lmSensors "github.com/sakul987/gObserver/modules/lm-sensors"
+	"github.com/sakul987/gObserver/modules/meminfo"
 )
 
 func RunServer() error{
@@ -31,6 +32,7 @@ func setModules() []modules.Module{
 	
 	usedModules = append(usedModules, lmSensors.LmSensorsModule{Name: "lm-sensors"})
 	usedModules = append(usedModules, df.DfModule{Name: "df"})
+	usedModules = append(usedModules, meminfo.MeminfoModule{Name: "meminfo"})
 	usedModules = append(usedModules, cpuUsage.CpuUsageModule{Name: "cpu-usage"})
 	
 	return usedModules

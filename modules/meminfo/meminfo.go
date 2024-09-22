@@ -57,31 +57,31 @@ func getData() []modules.KeyValue{
 
 func parseFile(file *os.File) ([]int, error){
 	var size, available int
+	var err error
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan(){
 		line := scanner.Text()
 		if strings.HasPrefix(line, "MemTotal:"){
 			fields := strings.Fields(line)
-			size, err := strconv.Atoi(fields[1])
+			size, err = strconv.Atoi(fields[1])
 			if err != nil{
 				return nil, err
 			}
 			size *= 1024
 		} else if strings.HasPrefix(line, "MemAvailable:"){
 			fields := strings.Fields(line)
-			available, err := strconv.Atoi(fields[1])
+			available, err = strconv.Atoi(fields[1])
 			if err != nil{
 				return nil, err
 			}
 			available *= 1024
 		}
-		
 		if size != 0 && available != 0{
 			break
 		}
 	}
 	
-	if err := scanner.Err(); err != nil {
+	if err = scanner.Err(); err != nil {
 		return nil, err
 	}
 	
