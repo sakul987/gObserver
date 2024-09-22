@@ -2,6 +2,7 @@ package constants
 
 const (
 	CPU_TEMP = "CPU Temperature"
+	CPU_USAGE = "CPU Usage"
 	SSD_TEMP = "SSD Temperature"
 	SSD_SIZE= "Storage Size"
 	SSD_USED= "Used Storage"

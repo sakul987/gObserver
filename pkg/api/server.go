@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/sakul987/gObserver/modules"
+	cpuUsage "github.com/sakul987/gObserver/modules/cpu-usage"
 	"github.com/sakul987/gObserver/modules/df"
 	lmSensors "github.com/sakul987/gObserver/modules/lm-sensors"
 )
@@ -18,8 +19,8 @@ func RunServer() error{
 	//run modules
 	for {
 		data := collectData(usedModules)
-		fmt.Printf("Data: %+v\n", data)
-		time.Sleep(50 * time.Second)
+		fmt.Printf("Data: %v\n\n", data)
+		time.Sleep(1 * time.Second)
 	}
 	
 	//serve api
@@ -30,6 +31,7 @@ func setModules() []modules.Module{
 	
 	usedModules = append(usedModules, lmSensors.LmSensorsModule{Name: "lm-sensors"})
 	usedModules = append(usedModules, df.DfModule{Name: "df"})
+	usedModules = append(usedModules, cpuUsage.CpuUsageModule{Name: "cpu-usage"})
 	
 	return usedModules
 }
