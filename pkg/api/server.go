@@ -18,11 +18,10 @@ func RunServer() error{
 	for {
 		data := collectData(usedModules)
 		fmt.Printf("Data: %+v\n", data)
-		time.Sleep(1 * time.Second)
+		time.Sleep(50 * time.Second)
 	}
 	
 	//serve api
-	return nil
 }
 
 func setModules() []modules.Module{
@@ -34,12 +33,14 @@ func setModules() []modules.Module{
 }
 
 func registerModules(usedModules []modules.Module){
+	fmt.Printf("\n------------- Registering modules -------------\n\n")
 	for _, module := range usedModules{
 		err := module.Register()
 		if err != nil{
 			log.Fatalf("Error while registering modules: %v",err)
 		}
 	}
+	fmt.Printf("\n-------- Finished registering modules --------\n\n")
 }
 
 func collectData(usedModules []modules.Module) []modules.ModuleData{
