@@ -87,5 +87,5 @@ func parseData(data []byte) ([]int, error){
 		return nil, fmt.Errorf("unable to convert available storage to int")
 	}
 	
-	return []int{size, used, available}, nil
+	return []int{size * 1024, used * 1024, available * 1024}, nil
 }
