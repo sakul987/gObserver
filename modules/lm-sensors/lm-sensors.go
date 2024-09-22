@@ -60,9 +60,8 @@ func getData() []modules.KeyValue{
 	parseKeyValuePairs(mappedData, "", &entries)
 
 	result := mapToValues(entries)
-	fmt.Println(result)
 	
-	return data
+	return result
 }
 
 func parseKeyValuePairs(data map[string]interface{}, parentKey string, entries *[]modules.KeyValue) {
