@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/sakul987/gObserver/modules"
+	"github.com/sakul987/gObserver/modules/df"
 	lmSensors "github.com/sakul987/gObserver/modules/lm-sensors"
 )
 
@@ -28,6 +29,7 @@ func setModules() []modules.Module{
 	usedModules := []modules.Module{}
 	
 	usedModules = append(usedModules, lmSensors.LmSensorsModule{Name: "lm-sensors"})
+	usedModules = append(usedModules, df.DfModule{Name: "df"})
 	
 	return usedModules
 }
