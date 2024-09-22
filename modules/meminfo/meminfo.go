@@ -3,9 +3,7 @@ package meminfo
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 
@@ -18,9 +16,6 @@ type MeminfoModule struct{
 }
 
 func (m MeminfoModule) Register() error{
-	if err := checkDependencies(); err != nil{
-		return err
-	}
 	fmt.Println("Registered module",m.Name,"successfully!")
 	
 	return nil
@@ -35,12 +30,6 @@ func (m MeminfoModule) ProvideData() modules.ModuleData{
 	}
 	
 	return moduleData
-}
-
-func checkDependencies() error{
-	_, err := exec.LookPath("df")
-	
-	return err
 }
 
 func getData() []modules.KeyValue{
