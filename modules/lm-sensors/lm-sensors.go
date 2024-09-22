@@ -16,7 +16,7 @@ func (m LmSensorsModule) Register() error{
 	if err := checkDependencies(); err != nil{
 		return err
 	}
-	fmt.Println("Registered module",m.Name," successfully!")
+	fmt.Println("Registered module",m.Name,"successfully!")
 	
 	return nil
 }
@@ -33,9 +33,7 @@ func (m LmSensorsModule) ProvideData() modules.ModuleData{
 }
 
 func checkDependencies() error{
-	path, err := exec.LookPath("sensors")
-	
-	fmt.Println("Path of lm-sensors:",path)
+	_, err := exec.LookPath("sensors")
 	
 	return err
 }
@@ -51,64 +49,39 @@ func getData() []modules.KeyValue{
 		return data
 	}
 	
-	parsedData, err := parseData(output)
-	if err != nil{
+	var mappedData map[string]interface{}
+	err = json.Unmarshal(output, &mappedData)
+	if err != nil {
 		data = append(data, modules.KeyValue{Key: "error", Value: err.Error()})
 		return data
 	}
 	
-	for _, entry := range parsedData{
-		data = append(data, entry)
-	}
-	
-	
-	
-	
+	var entries []modules.KeyValue
+	parseKeyValuePairs(mappedData, "", &entries)
+
+	result := mapToValues(entries)
+	fmt.Println(result)
 	
 	return data
 }
 
-func parseData(data []byte) ([]modules.KeyValue, error){
-	var mappedData map[string]interface{}
-	err := json.Unmarshal(data, &mappedData)
-	if err != nil{
-		return nil, fmt.Errorf("error while mapping raw JSON data: %w", err)
-	}
-	
-	entries := parseKeyValuePairs(mappedData)
-	
-	return entries, nil
-}
-
-func parseKeyValuePairs(data map[string]interface{}) []modules.KeyValue {
-	var entries []modules.KeyValue
+func parseKeyValuePairs(data map[string]interface{}, parentKey string, entries *[]modules.KeyValue) {
 	for k, v := range data {
-		if nestedMap, ok := v.(map[string]interface{}); ok {
-			entries = append(entries, modules.KeyValue{
-				Key:   k,
-				Value: parseKeyValuePairs(nestedMap),
-			})
-		} else {
-			entries = append(entries, modules.KeyValue{
-				Key:   k,
+		fullKey := k
+		if parentKey != "" {
+			fullKey = parentKey + "." + k
+		}
+
+		switch value := v.(type) {
+		case map[string]interface{}:
+			// If the value is another map, recurse into it
+			parseKeyValuePairs(value, fullKey, entries)
+		default:
+			// Otherwise, just add the key-value pair to the entries
+			*entries = append(*entries, modules.KeyValue{
+				Key:   fullKey,
 				Value: v,
 			})
 		}
 	}
-	return entries
-}
-
-func filterData (data []modules.KeyValue) []modules.KeyValue{
-	filteredData := []modules.KeyValue{}
-	
-	for _, entry := range data{
-		currentDevice := entry
-		currentDeviceFiltered := modules.KeyValue{Key: currentDevice.Key}
-		
-		for _, value := range currentDevice{}
-		
-		filteredData = append(filteredData, )
-	}
-	
-	return filteredData
 }
