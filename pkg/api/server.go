@@ -3,13 +3,15 @@ package api
 import (
 	"fmt"
 	"log"
-	"time"
+	"net/http"
 
 	"github.com/sakul987/gObserver/modules"
 	cpuUsage "github.com/sakul987/gObserver/modules/cpu-usage"
 	"github.com/sakul987/gObserver/modules/df"
 	lmSensors "github.com/sakul987/gObserver/modules/lm-sensors"
 	"github.com/sakul987/gObserver/modules/meminfo"
+	intWebsocket "github.com/sakul987/gObserver/pkg/websocket"
+	"golang.org/x/net/websocket"
 )
 
 func RunServer() error{
@@ -17,14 +19,14 @@ func RunServer() error{
 	usedModules := setModules()
 	registerModules(usedModules)
 	
-	//run modules
-	for {
-		data := collectData(usedModules)
-		fmt.Printf("Data: %v\n\n", data)
-		time.Sleep(1 * time.Second)
-	}
+	go intWebsocket.SendData(usedModules)
 	
 	//serve api
+	// handler only to accept self signed certificate by calling it once (https://localhost:3001)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){w.WriteHeader(http.StatusOK)})
+	http.Handle("/ws", websocket.Handler(intWebsocket.WebsocketHandler))
+	log.Println("Starting server on :3001\n")
+	return http.ListenAndServeTLS(":3001", "gObserver-ui/vite.crt", "gObserver-ui/vite.key", nil)
 }
 
 func setModules() []modules.Module{
@@ -47,14 +49,4 @@ func registerModules(usedModules []modules.Module){
 		}
 	}
 	fmt.Printf("\n-------- Finished registering modules --------\n\n")
-}
-
-func collectData(usedModules []modules.Module) []modules.ModuleData{
-	modulesData := []modules.ModuleData{}
-	
-	for _, module := range usedModules{
-		modulesData = append(modulesData, module.ProvideData())
-	}
-	
-	return modulesData
 }

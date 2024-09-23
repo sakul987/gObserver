@@ -6,8 +6,8 @@ type Module interface {
 }
 
 type ModuleData struct{
-	Module string
-	Data []KeyValue
+	Module string `json:"module"`
+	Data []KeyValue `json:"data"`
 }
 
 type KeyValue struct{

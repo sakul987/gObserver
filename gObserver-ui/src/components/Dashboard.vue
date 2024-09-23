@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
-const count = ref(0)
+
+const ws = ref<WebSocket>()
+const wsConnected = ref<boolean>(false)
+
 const cpu_usage = ref(0)
 const cpu_temp = ref(0)
 const ssd_temp = ref(0)
@@ -15,9 +18,32 @@ const ram_used_perc = ref(0)
 const ram_available = ref(0)
 
 onMounted(() => {
-    cpu_usage.value = 10
+    cpu_usage.value = 10;
+    connectWS();
 })
 
+// funcs
+const connectWS = () => {
+    ws.value = new WebSocket("wss://localhost:3001/ws")
+    
+    ws.value.onopen = () => {
+        wsConnected.value = true;
+        console.log('Connected to WebSocket');
+    };
+
+    ws.value.onmessage = (event) => {
+        console.log('Message received:', event.data);
+    };
+
+    ws.value.onclose = () => {
+        wsConnected.value = false;
+        console.log('WebSocket connection closed');
+    };
+
+    ws.value.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+}
 </script>
 
 <template>
