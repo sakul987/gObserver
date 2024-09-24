@@ -51,11 +51,13 @@ func WebsocketHandler(ws *websocket.Conn) {
 		delete(clients, ws)
 		mutex.Unlock()
 		ws.Close()
+		log.Println("Removed a client")
 	}()
 	
 	mutex.Lock()
 	clients[ws] = true
 	mutex.Unlock()
+	log.Println("Added a client")
 	
 	waitForRemoval(ws)
 }

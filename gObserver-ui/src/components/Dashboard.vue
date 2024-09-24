@@ -1,26 +1,34 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 
 
-const ws = ref<WebSocket>()
+const ws = ref<WebSocket>(null)
 const wsConnected = ref<boolean>(false)
 
-const cpu_usage = ref(0)
-const cpu_temp = ref(0)
-const ssd_temp = ref(0)
-const ssd_size = ref(0)
-const ssd_used = ref(0)
-const ssd_used_perc = ref(0)
-const ssd_available = ref(0)
-const ram_size = ref(0)
-const ram_used = ref(0)
-const ram_used_perc = ref(0)
-const ram_available = ref(0)
+const cpu_usage = ref(0);
+const cpu_temp = ref(0);
+const ssd_temp = ref(0);
+const ssd_size = ref(0);
+const ssd_used = ref(0);
+const ssd_used_perc = ref(0);
+const ssd_available = ref(0);
+const ram_size = ref(0);
+const ram_used = ref(0);
+const ram_used_perc = ref(0);
+const ram_available = ref(0);
+
 
 onMounted(() => {
-    cpu_usage.value = 10;
     connectWS();
 })
+
+//computed
+const connectionState = computed(():string =>{
+    return wsConnected.value ? "Connected" : "Not connected"
+});
+const connectionStateColor = computed(():string =>{
+    return wsConnected.value ? "green" : "red"
+});
 
 // funcs
 const connectWS = () => {
@@ -32,17 +40,25 @@ const connectWS = () => {
     };
 
     ws.value.onmessage = (event) => {
-        console.log('Message received:', event.data);
+        handleMessage(event.data);
     };
 
     ws.value.onclose = () => {
         wsConnected.value = false;
-        console.log('WebSocket connection closed');
+        
+        console.warn("Websocket connection closed. Retrying in 10s.");
+        
+        setTimeout(connectWS, 10000);
     };
 
-    ws.value.onerror = (error) => {
-        console.error('WebSocket error:', error);
+    ws.value.onerror = () => {
+        wsConnected.value = false;
     };
+}
+
+const handleMessage = (eventData) =>{
+    //console.log(eventData);
+    const data = JSON.parse(eventData);
 }
 </script>
 
@@ -102,6 +118,10 @@ const connectWS = () => {
                     <div>{{ssd_available}} GiB</div>
                 </div>
             </div>
+        </div>
+        <div>
+            <h1>Status</h1>
+            <div>{{connectionState}}</div>
         </div>
     </div>
 </template>
