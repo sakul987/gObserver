@@ -13,6 +13,7 @@ import (
 	"github.com/sakul987/gObserver/modules/df"
 	lmSensors "github.com/sakul987/gObserver/modules/lm-sensors"
 	"github.com/sakul987/gObserver/modules/meminfo"
+	"github.com/sakul987/gObserver/modules/uptime"
 	"github.com/sakul987/gObserver/pkg/config"
 	intWebsocket "github.com/sakul987/gObserver/pkg/websocket"
 	"golang.org/x/net/websocket"
@@ -26,10 +27,6 @@ func RunServer() error{
 	registerModules(usedModules)
 	
 	go intWebsocket.SendData(usedModules)
-	
-	//serve api
-	// handler only to accept self signed certificate by calling it once (https://localhost:3001)
-	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){w.WriteHeader(http.StatusOK)})
 	
 	//serve ui
 	http.HandleFunc("/", serverUI)
@@ -47,6 +44,7 @@ func setModules() []modules.Module{
 	usedModules = append(usedModules, df.DfModule{Name: "df"})
 	usedModules = append(usedModules, meminfo.MeminfoModule{Name: "meminfo"})
 	usedModules = append(usedModules, cpuUsage.CpuUsageModule{Name: "cpu-usage"})
+	usedModules = append(usedModules, uptime.UptimeModule{Name: "uptime"})
 	
 	return usedModules
 }
@@ -74,8 +72,7 @@ func serverUI(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-
-	// Set content type based on file extension
+	
 	if strings.HasSuffix(filePath, ".html") {
 		w.Header().Set("Content-Type", "text/html")
 	} else if strings.HasSuffix(filePath, ".js") {
@@ -84,6 +81,5 @@ func serverUI(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 	}
 
-	// Write the file to the response
 	w.Write(data)
 }

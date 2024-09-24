@@ -18,6 +18,8 @@ const ram_used = ref(0);
 const ram_used_perc = ref(0);
 const ram_available = ref(0);
 
+const uptime = ref(0);
+
 
 onMounted(() => {
     connectWS();
@@ -114,6 +116,12 @@ const handleMessage = (eventData: any) =>{
     } else {
         ram_available_bytes.value  = -1;
     }
+    
+    let uptime_s = Math.round(findValueByKey(data, "Uptime")?? -1);
+    uptime.value = uptime_s;
+    
+    let data_interval_ms = findValueByKey(data, "Data interval")?? -1;
+    console.log("Data interval: " + data_interval_ms);
 }
 
 const findValueByKey = (data: any, targetKey: string): any => {
@@ -202,7 +210,11 @@ const findValueByKey = (data: any, targetKey: string): any => {
         </div>
         <div>
             <h1>Status</h1>
-            <div :class="connectionStateColor">{{connectionState}}</div>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="col-span-2" :class="connectionStateColor">{{connectionState}}</div>
+                <div class="col-span-2">Server uptime:</div>
+                <div class="col-span-2">{{uptime}}</div>
+            </div>
         </div>
     </div>
 </template>

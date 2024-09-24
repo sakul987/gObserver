@@ -8,6 +8,7 @@ import (
 
 	"github.com/sakul987/gObserver/modules"
 	"github.com/sakul987/gObserver/pkg/config"
+	"github.com/sakul987/gObserver/pkg/constants"
 	"golang.org/x/net/websocket"
 )
 
@@ -42,6 +43,8 @@ func collectData(usedModules []modules.Module) []modules.ModuleData{
 	for _, module := range usedModules{
 		modulesData = append(modulesData, module.ProvideData())
 	}
+	
+	modulesData = append(modulesData, modules.ModuleData{Module: "gObserver", Data: []modules.KeyValue{{Key: constants.DATA_INTERVAL, Value: config.DATA_COLLECT_INTERVAL_MS }}})
 	
 	return modulesData
 }
