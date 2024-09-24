@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 
 const ws = ref<WebSocket>()
@@ -57,7 +57,7 @@ const connectWS = () => {
     };
 }
 
-const handleMessage = (eventData) =>{
+const handleMessage = (eventData: any) =>{
     //console.log(eventData);
     const data = JSON.parse(eventData);
     //console.log(data)
@@ -71,19 +71,19 @@ const handleMessage = (eventData) =>{
     
     let ssd_size_bytes = findValueByKey(data, "Storage Size")?? -1;
     if (ssd_size_bytes != -1){
-        ssd_size.value = (ssd_size_bytes / 1024 / 1024 / 1024).toFixed(1);
+        ssd_size.value = parseFloat((ssd_size_bytes / 1024 / 1024 / 1024).toFixed(1));
     } else {
         ssd_size.value  = -1;
     }
     
     let ssd_used = findValueByKey(data, "Used Storage")?? -1;
     if (ssd_size_bytes != -1 && ssd_used != -1){
-        ssd_used_perc.value = ((ssd_used / ssd_size_bytes) * 100).toFixed(1);
+        ssd_used_perc.value = parseFloat(((ssd_used / ssd_size_bytes) * 100).toFixed(1));
     }
     
     let ssd_available_byte = findValueByKey(data, "Available Storage")?? -1;
     if (ssd_available_byte != -1){
-        ssd_available.value = (ssd_available_byte / 1024 / 1024 / 1024).toFixed(1);
+        ssd_available.value = parseFloat((ssd_available_byte / 1024 / 1024 / 1024).toFixed(1));
     } else {
         ssd_available_byte.value  = -1;
     }
@@ -92,25 +92,25 @@ const handleMessage = (eventData) =>{
     // RAM
     let ram_size_bytes = findValueByKey(data, "RAM Size")?? -1;
     if (ram_size_bytes != -1){
-        ram_size.value = (ram_size_bytes / 1024 / 1024 / 1024).toFixed(1);
+        ram_size.value = parseFloat((ram_size_bytes / 1024 / 1024 / 1024).toFixed(1));
     } else {
         ram_size.value  = -1;
     }
     
     let ram_used_bytes = findValueByKey(data, "Used RAM")?? -1;
     if (ram_used_bytes != -1){
-        ram_used.value = (ram_used_bytes / 1024 / 1024 / 1024).toFixed(1);
+        ram_used.value = parseFloat((ram_used_bytes / 1024 / 1024 / 1024).toFixed(1));
     } else {
         ram_used.value  = -1;
     }
     
     if (ram_size_bytes != -1 && ram_used_bytes != -1){
-        ram_used_perc.value = ((ram_used_bytes / ram_size_bytes) * 100).toFixed(1);
+        ram_used_perc.value = parseFloat(((ram_used_bytes / ram_size_bytes) * 100).toFixed(1));
     }
     
     let ram_available_bytes = findValueByKey(data, "Available RAM")?? -1;
     if (ram_available_bytes != -1){
-        ram_available.value = (ram_available_bytes / 1024 / 1024 / 1024).toFixed(1);
+        ram_available.value = parseFloat((ram_available_bytes / 1024 / 1024 / 1024).toFixed(1));
     } else {
         ram_available_bytes.value  = -1;
     }
