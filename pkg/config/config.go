@@ -6,5 +6,6 @@ const (
 	CERTIFICATE_KEY = "gObserver-ui/vite.key"
 	DATA_COLLECT_INTERVAL_MS = 1000
 	WS_CLEANUP_INTERVAL_S = 30
-	MODULES_MEMINFO_SOURCE = "/hostproc/meminfo"
+	MODULES_MEMINFO_SOURCE = "/proc/meminfo"
 )
+//TODO - uptime
