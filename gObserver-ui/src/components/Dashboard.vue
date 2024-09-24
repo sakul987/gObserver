@@ -64,10 +64,10 @@ const handleMessage = (eventData: any) =>{
     
     // CPU
     cpu_usage.value = findValueByKey(data, "CPU Usage")?? -1;
-    cpu_temp.value = findValueByKey(data, "CPU Temperature")?? -1;
+    cpu_temp.value = Math.round(findValueByKey(data, "CPU Temperature")?? -1);
     
     // SSD
-    ssd_temp.value = findValueByKey(data, "SSD Temperature")?? -1;
+    ssd_temp.value = Math.round(findValueByKey(data, "SSD Temperature")?? -1);
     
     let ssd_size_bytes = findValueByKey(data, "Storage Size")?? -1;
     if (ssd_size_bytes != -1){
