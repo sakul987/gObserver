@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 
 
-const ws = ref<WebSocket>(null)
+const ws = ref<WebSocket>()
 const wsConnected = ref<boolean>(false)
 
 const cpu_usage = ref(0);
@@ -27,7 +27,7 @@ const connectionState = computed(():string =>{
     return wsConnected.value ? "Connected" : "Not connected"
 });
 const connectionStateColor = computed(():string =>{
-    return wsConnected.value ? "green" : "red"
+    return wsConnected.value ? "text-green-500" : "text-red-500"
 });
 
 // funcs
@@ -121,7 +121,7 @@ const handleMessage = (eventData) =>{
         </div>
         <div>
             <h1>Status</h1>
-            <div>{{connectionState}}</div>
+            <div :class="connectionStateColor">{{connectionState}}</div>
         </div>
     </div>
 </template>
