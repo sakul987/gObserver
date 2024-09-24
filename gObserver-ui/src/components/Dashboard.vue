@@ -183,7 +183,7 @@ const formatSeconds = (seconds: number): string =>{
       
     let formattedTime = timeComponents
         .filter(item => item.value > 0)
-        .slice(0, 4)
+        .slice(0, 3)
         .map(item => `${item.value} ${item.label}`)
         .join(', ');
         
