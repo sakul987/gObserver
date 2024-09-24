@@ -52,7 +52,7 @@ func registerModules(usedModules []modules.Module) {
 	for _, module := range usedModules {
 		err := module.Register()
 		if err != nil {
-			log.Fatalf("Error while registering modules: %v", err)
+			log.Fatalf("Error while registering modules: %v\n", err)
 		}
 	}
 	fmt.Printf("\n-------- Finished registering modules --------\n\n")

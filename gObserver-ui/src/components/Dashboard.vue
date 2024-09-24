@@ -62,9 +62,7 @@ const connectWS = () => {
 }
 
 const handleMessage = (eventData: any) =>{
-    //console.log(eventData);
     const data = JSON.parse(eventData);
-    //console.log(data)
     
     // CPU
     cpu_usage.value = findValueByKey(data, "CPU Usage")?? -1;
