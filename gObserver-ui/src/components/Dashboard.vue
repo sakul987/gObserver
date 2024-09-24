@@ -7,11 +7,12 @@ const wsConnected = ref<boolean>(false)
 
 const cpu_usage = ref(0);
 const cpu_temp = ref(0);
+
 const ssd_temp = ref(0);
 const ssd_size = ref(0);
-const ssd_used = ref(0);
 const ssd_used_perc = ref(0);
 const ssd_available = ref(0);
+
 const ram_size = ref(0);
 const ram_used = ref(0);
 const ram_used_perc = ref(0);
@@ -59,7 +60,87 @@ const connectWS = () => {
 const handleMessage = (eventData) =>{
     //console.log(eventData);
     const data = JSON.parse(eventData);
+    //console.log(data)
+    
+    // CPU
+    cpu_usage.value = findValueByKey(data, "CPU Usage")?? -1;
+    cpu_temp.value = findValueByKey(data, "CPU Temperature")?? -1;
+    
+    // SSD
+    ssd_temp.value = findValueByKey(data, "SSD Temperature")?? -1;
+    
+    let ssd_size_bytes = findValueByKey(data, "Storage Size")?? -1;
+    if (ssd_size_bytes != -1){
+        ssd_size.value = (ssd_size_bytes / 1024 / 1024 / 1024).toFixed(1);
+    } else {
+        ssd_size.value  = -1;
+    }
+    
+    let ssd_used = findValueByKey(data, "Used Storage")?? -1;
+    if (ssd_size_bytes != -1 && ssd_used != -1){
+        ssd_used_perc.value = ((ssd_used / ssd_size_bytes) * 100).toFixed(1);
+    }
+    
+    let ssd_available_byte = findValueByKey(data, "Available Storage")?? -1;
+    if (ssd_available_byte != -1){
+        ssd_available.value = (ssd_available_byte / 1024 / 1024 / 1024).toFixed(1);
+    } else {
+        ssd_available_byte.value  = -1;
+    }
+
+    
+    // RAM
+    let ram_size_bytes = findValueByKey(data, "RAM Size")?? -1;
+    if (ram_size_bytes != -1){
+        ram_size.value = (ram_size_bytes / 1024 / 1024 / 1024).toFixed(1);
+    } else {
+        ram_size.value  = -1;
+    }
+    
+    let ram_used_bytes = findValueByKey(data, "Used RAM")?? -1;
+    if (ram_used_bytes != -1){
+        ram_used.value = (ram_used_bytes / 1024 / 1024 / 1024).toFixed(1);
+    } else {
+        ram_used.value  = -1;
+    }
+    
+    if (ram_size_bytes != -1 && ram_used_bytes != -1){
+        ram_used_perc.value = ((ram_used_bytes / ram_size_bytes) * 100).toFixed(1);
+    }
+    
+    let ram_available_bytes = findValueByKey(data, "Available RAM")?? -1;
+    if (ram_available_bytes != -1){
+        ram_available.value = (ram_available_bytes / 1024 / 1024 / 1024).toFixed(1);
+    } else {
+        ram_available_bytes.value  = -1;
+    }
 }
+
+const findValueByKey = (data: any, targetKey: string): any => {
+    let result = null;
+
+    if (Array.isArray(data)) {
+        for (const item of data) {
+            result = findValueByKey(item, targetKey);
+            if (result !== null) {
+                break;
+            }
+        }
+    } else if (typeof data === 'object' && data !== null) {
+        for (const key in data) {
+            if (key === "Key" && data[key] === targetKey) {
+                return data["Value"];
+            }
+
+            result = findValueByKey(data[key], targetKey);
+            if (result !== null) {
+                break;
+            }
+        }
+    }
+
+    return result;
+};
 </script>
 
 <template>
