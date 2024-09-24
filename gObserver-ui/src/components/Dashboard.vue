@@ -20,6 +20,8 @@ const ram_available = ref(0);
 
 const uptime = ref(0);
 
+const data_interval_ms = ref(0); //TODO
+
 
 onMounted(() => {
     connectWS();
@@ -118,10 +120,10 @@ const handleMessage = (eventData: any) =>{
     }
     
     let uptime_s = Math.round(findValueByKey(data, "Uptime")?? -1);
-    uptime.value = uptime_s;
+    uptime.value = formatSeconds(uptime_s);
     
-    let data_interval_ms = findValueByKey(data, "Data interval")?? -1;
-    console.log("Data interval: " + data_interval_ms);
+    data_interval_ms.value = findValueByKey(data, "Data interval")?? -1;
+    data_interval_ms.value = data_interval_ms.value; //TODO use var
 }
 
 const findValueByKey = (data: any, targetKey: string): any => {
@@ -148,6 +150,43 @@ const findValueByKey = (data: any, targetKey: string): any => {
     }
 
     return result;
+};
+
+const formatSeconds = (seconds: number): string =>{
+    let years = Math.floor(seconds / (365 * 24 * 60 * 60));
+    seconds %= (365 * 24 * 60 * 60);
+    
+    let months = Math.floor(seconds / (30 * 24 * 60 * 60));
+    seconds %= (30 * 24 * 60 * 60);
+    
+    let weeks = Math.floor(seconds / (7 * 24 * 60 * 60));
+    seconds %= (7 * 24 * 60 * 60);
+    
+    let days = Math.floor(seconds / (24 * 60 * 60));
+    seconds %= (24 * 60 * 60);
+    
+    let hours = Math.floor(seconds / (60 * 60));
+    seconds %= (60 * 60);
+    
+    let minutes = Math.floor(seconds / 60);
+    seconds %= 60;
+    
+    let timeComponents = [
+        { label: 'y', value: years },
+        { label: 'm', value: months },
+        { label: 'w', value: weeks },
+        { label: 'd', value: days },
+        { label: 'h', value: hours },
+        { label: 'min', value: minutes },
+        { label: 's', value: seconds },
+      ];
+      
+    let formattedTime = timeComponents
+        .filter(item => item.value > 0)
+        .slice(0, 4)
+        .map(item => `${item.value} ${item.label}`)
+        .join(', ');
+    return formattedParts || '-1 s';
 };
 </script>
 
@@ -210,11 +249,11 @@ const findValueByKey = (data: any, targetKey: string): any => {
         </div>
         <div>
             <h1>Status</h1>
-            <div class="grid grid-cols-2 gap-6">
-                <div class="col-span-2" :class="connectionStateColor">{{connectionState}}</div>
-                <div class="col-span-2">Server uptime:</div>
-                <div class="col-span-2">{{uptime}}</div>
-            </div>
+            <div :class="connectionStateColor">{{connectionState}}</div>
+        </div>
+        <div>
+            <h1>Uptime</h1>
+            <div class="col-span-2">{{uptime}}</div>
         </div>
     </div>
 </template>
