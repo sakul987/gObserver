@@ -18,7 +18,7 @@ const ram_used = ref(0);
 const ram_used_perc = ref(0);
 const ram_available = ref(0);
 
-const uptime = ref(0);
+const uptime = ref("0");
 
 const data_interval_ms = ref(0); //TODO
 
@@ -186,7 +186,8 @@ const formatSeconds = (seconds: number): string =>{
         .slice(0, 4)
         .map(item => `${item.value} ${item.label}`)
         .join(', ');
-    return formattedParts || '-1 s';
+        
+    return formattedTime || '-1 s';
 };
 </script>
 
