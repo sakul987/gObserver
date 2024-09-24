@@ -8,59 +8,59 @@ import (
 	"github.com/sakul987/gObserver/modules"
 )
 
-type LmSensorsModule struct{
+type LmSensorsModule struct {
 	Name string
 }
 
-func (m LmSensorsModule) Register() error{
-	if err := checkDependencies(); err != nil{
+func (m LmSensorsModule) Register() error {
+	if err := checkDependencies(); err != nil {
 		return err
 	}
-	fmt.Println("Registered module",m.Name,"successfully!")
-	
+	fmt.Println("Registered module", m.Name, "successfully!")
+
 	return nil
 }
 
-func (m LmSensorsModule) ProvideData() modules.ModuleData{
+func (m LmSensorsModule) ProvideData() modules.ModuleData {
 	moduleData := modules.ModuleData{Module: m.Name}
-	
+
 	data := getData()
-	for _, entry := range data{
+	for _, entry := range data {
 		moduleData.Data = append(moduleData.Data, entry)
 	}
-	
+
 	return moduleData
 }
 
-func checkDependencies() error{
+func checkDependencies() error {
 	_, err := exec.LookPath("sensors")
-	
+
 	return err
 }
 
-func getData() []modules.KeyValue{
+func getData() []modules.KeyValue {
 	data := []modules.KeyValue{}
-	
+
 	cmd := exec.Command("sensors", "-j", "-A")
-	
+
 	output, err := cmd.Output()
-	if err != nil{
+	if err != nil {
 		data = append(data, modules.KeyValue{Key: "error", Value: err.Error()})
 		return data
 	}
-	
+
 	var mappedData map[string]interface{}
 	err = json.Unmarshal(output, &mappedData)
 	if err != nil {
 		data = append(data, modules.KeyValue{Key: "error", Value: err.Error()})
 		return data
 	}
-	
+
 	var entries []modules.KeyValue
 	parseKeyValuePairs(mappedData, "", &entries)
 
 	result := mapToValues(entries)
-	
+
 	return result
 }
 

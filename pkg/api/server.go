@@ -19,42 +19,40 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-
-
-func RunServer() error{
+func RunServer() error {
 	//register modules
 	usedModules := setModules()
 	registerModules(usedModules)
-	
+
 	go intWebsocket.SendData(usedModules)
-	
+
 	//serve ui
 	http.HandleFunc("/", serverUI)
-	
+
 	//handle ws
 	http.Handle("/ws", websocket.Handler(intWebsocket.WebsocketHandler))
-	log.Println("Starting server on :"+ config.BACKEND_PORT + "\n")
-	return http.ListenAndServeTLS(":"+ config.BACKEND_PORT + "", config.CERTIFICATE_CRT, config.CERTIFICATE_KEY, nil)
+	log.Println("Starting server on :" + config.BACKEND_PORT + "\n")
+	return http.ListenAndServeTLS(":"+config.BACKEND_PORT+"", config.CERTIFICATE_CRT, config.CERTIFICATE_KEY, nil)
 }
 
-func setModules() []modules.Module{
+func setModules() []modules.Module {
 	usedModules := []modules.Module{}
-	
+
 	usedModules = append(usedModules, lmSensors.LmSensorsModule{Name: "lm-sensors"})
 	usedModules = append(usedModules, df.DfModule{Name: "df"})
 	usedModules = append(usedModules, meminfo.MeminfoModule{Name: "meminfo"})
 	usedModules = append(usedModules, cpuUsage.CpuUsageModule{Name: "cpu-usage"})
 	usedModules = append(usedModules, uptime.UptimeModule{Name: "uptime"})
-	
+
 	return usedModules
 }
 
-func registerModules(usedModules []modules.Module){
+func registerModules(usedModules []modules.Module) {
 	fmt.Printf("\n------------- Registering modules -------------\n\n")
-	for _, module := range usedModules{
+	for _, module := range usedModules {
 		err := module.Register()
-		if err != nil{
-			log.Fatalf("Error while registering modules: %v",err)
+		if err != nil {
+			log.Fatalf("Error while registering modules: %v", err)
 		}
 	}
 	fmt.Printf("\n-------- Finished registering modules --------\n\n")
@@ -62,17 +60,17 @@ func registerModules(usedModules []modules.Module){
 
 func serverUI(w http.ResponseWriter, r *http.Request) {
 	filePath := strings.TrimPrefix(r.URL.Path, "/")
-	
+
 	if filePath == "" {
 		filePath = "index.html"
 	}
 
-	data, err :=  dist.Files.ReadFile(path.Join("files", filePath))
+	data, err := dist.Files.ReadFile(path.Join("files", filePath))
 	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
-	
+
 	if strings.HasSuffix(filePath, ".html") {
 		w.Header().Set("Content-Type", "text/html")
 	} else if strings.HasSuffix(filePath, ".js") {

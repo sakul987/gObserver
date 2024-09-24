@@ -5,12 +5,12 @@ type Module interface {
 	ProvideData() ModuleData
 }
 
-type ModuleData struct{
-	Module string `json:"module"`
-	Data []KeyValue `json:"data"`
+type ModuleData struct {
+	Module string     `json:"module"`
+	Data   []KeyValue `json:"data"`
 }
 
-type KeyValue struct{
-	Key any
+type KeyValue struct {
+	Key   any
 	Value any
 }
