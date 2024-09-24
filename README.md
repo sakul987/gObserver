@@ -14,4 +14,10 @@ go
 
 ## Install
 ```git clone https://github.com/sakul987/gObserver.git```
-```cd gOberserver/gOberserver-ui```
+```cd gObserver/gObserver-ui```
+```npm i```
+Add certificate vite.crt and vite.key
+```npm run build```
+```cd ..```
+```go build -o gObserver cmd/main.go```
+```./gObserver```
