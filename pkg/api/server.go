@@ -64,8 +64,6 @@ func registerModules(usedModules []modules.Module){
 
 func serverUI(w http.ResponseWriter, r *http.Request) {
 	filePath := strings.TrimPrefix(r.URL.Path, "/")
-	log.Println("FILEPATH:",filePath)
-	log.Println("URLPATH:",r.URL.Path)
 	
 	if filePath == "" {
 		filePath = "index.html"
@@ -73,8 +71,6 @@ func serverUI(w http.ResponseWriter, r *http.Request) {
 
 	data, err :=  dist.Files.ReadFile(path.Join("files", filePath))
 	if err != nil {
-		log.Println("ERR:", err)
-		log.Println("DATA:", data)
 		http.NotFound(w, r)
 		return
 	}
