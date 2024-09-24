@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/sakul987/gObserver/modules"
+	"github.com/sakul987/gObserver/pkg/config"
 	"github.com/sakul987/gObserver/pkg/constants"
 )
 
@@ -35,7 +36,7 @@ func (m MeminfoModule) ProvideData() modules.ModuleData{
 func getData() []modules.KeyValue{
 	data := []modules.KeyValue{}
 	
-	file, err := os.Open("/proc/meminfo")
+	file, err := os.Open(config.MODULES_MEMINFO_SOURCE)
 	if err != nil{
 		data = append(data, modules.KeyValue{Key: "error", Value: err.Error()})
 		return data

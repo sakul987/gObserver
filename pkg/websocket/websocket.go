@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/sakul987/gObserver/modules"
+	"github.com/sakul987/gObserver/pkg/config"
 	"golang.org/x/net/websocket"
 )
 
@@ -31,7 +32,7 @@ func SendData(usedModules []modules.Module){
 		}
 		mutex.Unlock()
 		
-		time.Sleep(1 * time.Second)
+		time.Sleep(config.DATA_COLLECT_INTERVAL_MS * time.Millisecond)
 	}
 }
 
@@ -64,7 +65,7 @@ func WebsocketHandler(ws *websocket.Conn) {
 
 func waitForRemoval(ws *websocket.Conn){
 	for{
-		time.Sleep(30 * time.Second)
+		time.Sleep(config.WS_CLEANUP_INTERVAL_S * time.Second)
 		
 		mutex.RLock()
 		_, exists := clients[ws]
