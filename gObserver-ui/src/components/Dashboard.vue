@@ -33,7 +33,14 @@ const connectionStateColor = computed(():string =>{
 
 // funcs
 const connectWS = () => {
-    ws.value = new WebSocket("wss://"+import.meta.env.VITE_WS_ADDR+":" + import.meta.env.VITE_WS_PORT + "/ws")
+    let wsAddr = import.meta.env.VITE_WS_ADDR;
+    let wsPort = import.meta.env.VITE_WS_PORT;
+    
+    if (!wsAddr || !wsPort){
+        console.error("Backend address or port not set in env vars. Make sure to start the backend first!")
+    }
+    
+    ws.value = new WebSocket("wss://" + wsAddr + ":" + wsPort + "/ws")
     
     ws.value.onopen = () => {
         wsConnected.value = true;
