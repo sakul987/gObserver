@@ -33,7 +33,7 @@ const connectionStateColor = computed(():string =>{
 
 // funcs
 const connectWS = () => {
-    ws.value = new WebSocket("wss://localhost:3001/ws")
+    ws.value = new WebSocket("wss://"+import.meta.env.VITE_WS_ADDR+":" + import.meta.env.VITE_WS_PORT + "/ws")
     
     ws.value.onopen = () => {
         wsConnected.value = true;
