@@ -12,4 +12,7 @@ const (
 	RAM_AVAILABLE = "Available RAM"
 	UPTIME        = "Uptime"
 	DATA_INTERVAL = "Data interval"
+	HDD_SIZE      = "HDD Size"
+	HDD_USED      = "Used HDD"
+	HDD_AVAILABLE = "Available HDD"
 )

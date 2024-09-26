@@ -51,22 +51,30 @@ func getData() []modules.KeyValue {
 		return data
 	}
 
-	result, err := parseData(output)
+	resultSSD, err := parseData(strings.Split(string(output), "\n")[1])
 	if err != nil {
 		data = append(data, modules.KeyValue{Key: "error", Value: err.Error()})
 		return data
 	}
 
-	data = append(data, modules.KeyValue{Key: constants.SSD_SIZE, Value: result[0]})
-	data = append(data, modules.KeyValue{Key: constants.SSD_USED, Value: result[1]})
-	data = append(data, modules.KeyValue{Key: constants.SSD_AVAILABLE, Value: result[2]})
+	data = append(data, modules.KeyValue{Key: constants.SSD_SIZE, Value: resultSSD[0]})
+	data = append(data, modules.KeyValue{Key: constants.SSD_USED, Value: resultSSD[1]})
+	data = append(data, modules.KeyValue{Key: constants.SSD_AVAILABLE, Value: resultSSD[2]})
+	
+	resultHDD, err := parseData(strings.Split(string(output), "\n")[2])
+	if err != nil {
+		data = append(data, modules.KeyValue{Key: "error", Value: err.Error()})
+		return data
+	}
+	
+	data = append(data, modules.KeyValue{Key: constants.HDD_SIZE, Value: resultHDD[0]})
+	data = append(data, modules.KeyValue{Key: constants.HDD_USED, Value: resultHDD[1]})
+	data = append(data, modules.KeyValue{Key: constants.HDD_AVAILABLE, Value: resultHDD[2]})
 
 	return data
 }
 
-func parseData(data []byte) ([]int, error) {
-	line := strings.Split(string(data), "\n")[1]
-
+func parseData(line string) ([]int, error) {
 	fields := strings.Fields(line)
 	if len(fields) < 5 {
 		return nil, fmt.Errorf("df did not provide sufficient data")

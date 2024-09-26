@@ -18,6 +18,11 @@ const ram_used = ref(0);
 const ram_used_perc = ref(0);
 const ram_available = ref(0);
 
+const hdd_size = ref(0);
+const hdd_used = ref(0);
+const hdd_used_perc = ref(0);
+const hdd_available = ref(0);
+
 const uptime = ref("0");
 
 const data_interval_ms = ref(0); //TODO
@@ -87,7 +92,7 @@ const handleMessage = (eventData: any) =>{
     if (ssd_available_byte != -1){
         ssd_available.value = parseFloat((ssd_available_byte / 1024 / 1024 / 1024).toFixed(1));
     } else {
-        ssd_available_byte.value  = -1;
+        ssd_available.value  = -1;
     }
 
     
@@ -117,6 +122,28 @@ const handleMessage = (eventData: any) =>{
         ram_available_bytes.value  = -1;
     }
     
+    // HDD    
+    let hdd_size_bytes = findValueByKey(data, "HDD Size")?? -1;
+    if (hdd_size_bytes != -1){
+        hdd_size.value = parseFloat((hdd_size_bytes / 1024 / 1024 / 1024).toFixed(1));
+    } else {
+        hdd_size.value  = -1;
+    }
+    
+    let hdd_used_bytes = findValueByKey(data, "Used HDD")?? -1;
+    if (hdd_size_bytes != -1 && hdd_used_bytes != -1){
+        hdd_used.value = parseFloat((hdd_used_bytes / 1024 / 1024 / 1024).toFixed(1));
+        hdd_used_perc.value = parseFloat(((hdd_used.value / hdd_size_bytes) * 100).toFixed(1));
+    }
+    
+    let hdd_available_byte = findValueByKey(data, "Available HDD")?? -1;
+    if (hdd_available_byte != -1){
+        hdd_available.value = parseFloat((hdd_available_byte / 1024 / 1024 / 1024).toFixed(1));
+    } else {
+        hdd_available.value  = -1;
+    }
+    
+    // Uptime
     let uptime_s = Math.round(findValueByKey(data, "Uptime")?? -1);
     uptime.value = formatSeconds(uptime_s);
     
@@ -247,12 +274,33 @@ const formatSeconds = (seconds: number): string =>{
             </div>
         </div>
         <div>
-            <h1>Status</h1>
-            <div :class="connectionStateColor">{{connectionState}}</div>
+            <h1>HDD</h1>
+            <div class="grid grid-cols-2 gap-6">
+                <div>
+                    <h2>Usage</h2>
+                    <div>{{hdd_used}} GiB</div>
+                </div>
+                <div>
+                    <h2>Usage %</h2>
+                    <div>{{hdd_used_perc}}%</div>
+                </div>
+                <div>
+                    <h2>Size</h2>
+                    <div>{{hdd_size}} GiB</div>
+                </div>
+                <div>
+                    <h2>Available</h2>
+                    <div>{{hdd_available}} GiB</div>
+                </div>
+            </div>
         </div>
         <div>
             <h1>Uptime</h1>
             <div class="col-span-2">{{uptime}}</div>
+        </div>
+        <div>
+            <h1>Status</h1>
+            <div :class="connectionStateColor">{{connectionState}}</div>
         </div>
     </div>
 </template>
