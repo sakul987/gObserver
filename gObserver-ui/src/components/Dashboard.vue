@@ -133,7 +133,7 @@ const handleMessage = (eventData: any) =>{
     let hdd_used_bytes = findValueByKey(data, "Used HDD")?? -1;
     if (hdd_size_bytes != -1 && hdd_used_bytes != -1){
         hdd_used.value = parseFloat((hdd_used_bytes / 1024 / 1024 / 1024).toFixed(1));
-        hdd_used_perc.value = parseFloat(((hdd_used_bytes.value / hdd_size_bytes) * 100).toFixed(1));
+        hdd_used_perc.value = parseFloat(((hdd_used_bytes / hdd_size_bytes) * 100).toFixed(1));
     }
     
     let hdd_available_byte = findValueByKey(data, "Available HDD")?? -1;
